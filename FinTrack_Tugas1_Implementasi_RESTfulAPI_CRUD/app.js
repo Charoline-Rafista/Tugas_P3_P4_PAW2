@@ -29,12 +29,14 @@ app.get("/transaksi/:id", (req, res) => {
 // buat objek baru dengan id = transaksi.length + 1, simpan ke array,
 // kirim response dengan status 201
 app.post("/transaksi", (req, res) => {
-  const {judul, jumlah} = req.body;
+  const {judul, jumlah, tipe, kategori} = req.body;
 
   const baru = {
-    id: transaksi.length + 1,
+    id: transaksi.length > 0 ? transaksi[transaksi.length - 1].id + 1 : 1, //mencegah ID ganda yang bentrok setelah menghapus data
     judul,
     jumlah,
+    tipe,
+    kategori,
   };
 
   transaksi.push(baru);
@@ -50,10 +52,10 @@ app.put("/transaksi/:id", (req, res) => {
 
   if (index === -1){
     return res.status(404).json({message: 'Data tidak ditemukan'});
-
-    transaksi[index] = {...transaksi[index], ...req.body};
-    res.json(transaksi[index]);
   }
+  // keluarkan dari blok IF agar dieksekusi saat data ditemukan
+  transaksi[index] = {...transaksi[index], ...req.body};
+    res.json(transaksi[index]); // Kirim respon ke Thunder Client
 });
 
 // TODO 5: DELETE /transaksi/:id -> cari index berdasarkan id,
