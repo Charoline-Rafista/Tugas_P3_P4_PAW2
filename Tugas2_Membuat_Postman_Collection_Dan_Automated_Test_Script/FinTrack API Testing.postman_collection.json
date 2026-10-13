@@ -1,0 +1,172 @@
+{
+  "info": {
+    "_postman_id": "696cee3d-b645-40cc-8ea0-3fea36ee6c44",
+    "name": "FinTrack API Testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58804482",
+    "_collection_link": "https://go.postman.co/collection/58804482-696cee3d-b645-40cc-8ea0-3fea36ee6c44?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "GET All Transaksi",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code adalah 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response berupa array\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData).to.be.an(\"array\");\r\n});\r\n\r\npm.test(\"Data transaksi tidak kosong\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.length).to.be.above(0);\r\n});\r\n\r\npm.test(\"Transaksi memiliki atribut yang diperlukan\", function () {\r\n    const jsonData = pm.response.json();\r\n\r\n    pm.expect(jsonData[0]).to.have.property(\"id\");\r\n    pm.expect(jsonData[0]).to.have.property(\"judul\");\r\n    pm.expect(jsonData[0]).to.have.property(\"jumlah\");\r\n    pm.expect(jsonData[0]).to.have.property(\"tipe\");\r\n    pm.expect(jsonData[0]).to.have.property(\"kategori\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/transaksi",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "transaksi"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Transaksi by ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code adalah 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response berupa objek\", function () {\r\n    const jsonData = pm.response.json();\r\n\r\n    pm.expect(jsonData).to.be.an(\"object\");\r\n    pm.expect(jsonData).to.not.be.an(\"array\");\r\n});\r\n\r\npm.test(\"ID transaksi sesuai\", function () {\r\n    const jsonData = pm.response.json();\r\n\r\n    pm.expect(jsonData.id).to.eql(1);\r\n});\r\n\r\npm.test(\"Data transaksi memiliki atribut yang diperlukan\", function () {\r\n    const jsonData = pm.response.json();\r\n\r\n    pm.expect(jsonData).to.have.property(\"id\");\r\n    pm.expect(jsonData).to.have.property(\"judul\");\r\n    pm.expect(jsonData).to.have.property(\"jumlah\");\r\n    pm.expect(jsonData).to.have.property(\"tipe\");\r\n    pm.expect(jsonData).to.have.property(\"kategori\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/transaksi/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "transaksi",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST Tambah Transaksi",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code adalah 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Response berupa objek\", function () {\r\n    const jsonData = pm.response.json();\r\n\r\n    pm.expect(jsonData).to.be.an(\"object\");\r\n    pm.expect(jsonData).to.not.be.an(\"array\");\r\n});\r\n\r\npm.test(\"Data transaksi sesuai dengan request\", function () {\r\n    const jsonData = pm.response.json();\r\n\r\n    pm.expect(jsonData.judul).to.eql(\"Beli Alat Tulis\");\r\n    pm.expect(jsonData.jumlah).to.eql(75000);\r\n    pm.expect(jsonData.tipe).to.eql(\"Pengeluaran\");\r\n    pm.expect(jsonData.kategori).to.eql(\"Kuliah\");\r\n});\r\n\r\npm.test(\"Transaksi memiliki ID\", function () {\r\n    const jsonData = pm.response.json();\r\n\r\n    pm.expect(jsonData).to.have.property(\"id\");\r\n    pm.expect(jsonData.id).to.not.be.oneOf([null, \"\"]);\r\n});\r\n\r\n// Simpan ID transaksi untuk request selanjutnya\r\nconst jsonData = pm.response.json();\r\n\r\nif (jsonData.id !== undefined && jsonData.id !== null) {\r\n    pm.environment.set(\"transaksiId\", String(jsonData.id));\r\n}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"judul\": \"Beli Alat Tulis\",\r\n    \"jumlah\": 75000,\r\n    \"tipe\": \"Pengeluaran\",\r\n    \"kategori\": \"Kuliah\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/transaksi",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "transaksi"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT Transaksi",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code adalah 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response berupa objek\", function () {\r\n    const jsonData = pm.response.json();\r\n\r\n    pm.expect(jsonData).to.be.an(\"object\");\r\n    pm.expect(jsonData).to.not.be.an(\"array\");\r\n});\r\n\r\npm.test(\"Data transaksi berhasil diperbarui\", function () {\r\n    const jsonData = pm.response.json();\r\n\r\n    pm.expect(jsonData.judul).to.eql(\"Beli Alat Tulis dan Buku\");\r\n    pm.expect(jsonData.jumlah).to.eql(100000);\r\n    pm.expect(jsonData.tipe).to.eql(\"Pengeluaran\");\r\n    pm.expect(jsonData.kategori).to.eql(\"Kuliah\");\r\n});\r\n\r\npm.test(\"ID transaksi tetap sama\", function () {\r\n    const jsonData = pm.response.json();\r\n    const transaksiId = Number(\r\n        pm.environment.get(\"transaksiId\")\r\n    );\r\n\r\n    pm.expect(jsonData.id).to.eql(transaksiId);\r\n}); "
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"judul\": \"Beli Alat Tulis dan Buku\",\r\n    \"jumlah\": 100000,\r\n    \"tipe\": \"Pengeluaran\",\r\n    \"kategori\": \"Kuliah\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/transaksi/{{transaksiId}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "transaksi",
+            "{{transaksiId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE Transaksi",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code adalah 204\", function () {\r\n    pm.response.to.have.status(204);\r\n});\r\n\r\npm.test(\"Response tidak memiliki body\", function () {\r\n    pm.expect(pm.response.text()).to.eql(\"\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/transaksi/{{transaksiId}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "transaksi",
+            "{{transaksiId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
